@@ -1,0 +1,300 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); }
+.app { display: flex; min-height: 100vh; background: var(--color-background-tertiary); }
+
+.sidebar {
+  width: 240px;
+  min-width: 240px;
+  background: var(--color-background-secondary);
+  border-right: 0.5px solid var(--color-border-tertiary);
+  padding: 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.sidebar-logo {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 4px 16px 16px;
+  font-size: 16px; font-weight: 500; color: var(--color-text-primary);
+}
+.sidebar-logo svg { opacity: 0.5; cursor: pointer; }
+.sidebar-btn {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 16px; font-size: 14px; cursor: pointer;
+  color: var(--color-text-secondary); border-radius: 6px; margin: 0 8px;
+  transition: background 0.15s;
+}
+.sidebar-btn:hover { background: var(--color-background-primary); color: var(--color-text-primary); }
+.sidebar-btn.active { background: var(--color-background-primary); color: var(--color-text-primary); font-weight: 500; }
+.sidebar-icon { width: 16px; height: 16px; opacity: 0.6; flex-shrink: 0; }
+.sidebar-divider { height: 0.5px; background: var(--color-border-tertiary); margin: 8px 16px; }
+.sidebar-section-label { font-size: 11px; color: var(--color-text-tertiary); padding: 4px 24px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+.main { flex: 1; padding: 40px 48px; overflow-y: auto; }
+.main-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
+.main-title { font-size: 22px; font-weight: 500; color: var(--color-text-primary); }
+.btn-new {
+  background: var(--color-text-primary); color: var(--color-background-primary);
+  border: none; border-radius: var(--border-radius-md); padding: 8px 16px;
+  font-size: 14px; font-weight: 500; cursor: pointer; transition: opacity 0.15s;
+}
+.btn-new:hover { opacity: 0.8; }
+
+.tabs { display: flex; gap: 0; border-bottom: 0.5px solid var(--color-border-tertiary); margin-bottom: 24px; }
+.tab { padding: 8px 16px; font-size: 14px; cursor: pointer; color: var(--color-text-secondary); border-bottom: 2px solid transparent; margin-bottom: -0.5px; }
+.tab.active { color: var(--color-text-primary); border-bottom-color: var(--color-text-primary); font-weight: 500; }
+
+.filters { display: flex; gap: 8px; margin-bottom: 28px; flex-wrap: wrap; }
+.filter-chip {
+  padding: 6px 14px; border-radius: 20px; font-size: 13px; cursor: pointer;
+  border: 0.5px solid var(--color-border-secondary); color: var(--color-text-secondary);
+  background: var(--color-background-primary); transition: all 0.15s;
+}
+.filter-chip.active { background: var(--color-text-primary); color: var(--color-background-primary); border-color: transparent; }
+.filter-chip:hover:not(.active) { border-color: var(--color-border-primary); color: var(--color-text-primary); }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+.card {
+  background: var(--color-background-primary);
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: var(--border-radius-lg); overflow: hidden;
+  cursor: pointer; transition: border-color 0.15s, transform 0.15s;
+}
+.card:hover { border-color: var(--color-border-secondary); transform: translateY(-2px); }
+.card-thumb { height: 160px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+.card-label { padding: 12px 14px; font-size: 14px; color: var(--color-text-primary); font-weight: 400; }
+
+.thumb-writing { background: #1a1a1a; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+.thumb-writing-inner { background: white; width: 76%; height: 80%; border-radius: 4px; padding: 12px; display: flex; flex-direction: column; gap: 6px; }
+.tw-small { font-size: 9px; color: #888; }
+.tw-highlight { background: #4ade80; color: #1a1a1a; font-size: 11px; font-weight: 600; padding: 3px 6px; border-radius: 3px; display: inline-block; }
+.tw-note { font-size: 8px; color: #555; line-height: 1.4; }
+.tw-lines { display: flex; flex-direction: column; gap: 3px; margin-top: 4px; }
+.tw-line { height: 3px; background: #e0e0e0; border-radius: 2px; }
+
+.thumb-prd { background: linear-gradient(135deg, #dbeafe 0%, #e0f2fe 100%); width: 100%; height: 100%; display: flex; align-items: flex-end; justify-content: flex-end; padding: 12px; }
+.prd-box { background: white; border-radius: 6px; padding: 8px 10px; width: 70%; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.prd-badge { background: #2563eb; color: white; font-size: 8px; font-weight: 600; padding: 2px 6px; border-radius: 3px; display: inline-block; margin-bottom: 6px; }
+.prd-lines { display: flex; flex-direction: column; gap: 3px; }
+.prd-line { height: 3px; border-radius: 2px; }
+.prd-btn { background: #3b82f6; height: 14px; border-radius: 3px; margin-top: 6px; width: 40%; }
+
+.thumb-slack { background: #f8f0ff; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: flex-end; justify-content: center; padding: 16px; gap: 8px; }
+.slack-search { background: white; border-radius: 8px; padding: 7px 12px; font-size: 11px; color: #444; display: flex; align-items: center; gap: 6px; width: 85%; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+.slack-channel { background: white; border-radius: 6px; padding: 5px 10px; font-size: 11px; color: #666; width: 75%; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.slack-channel span { color: #7c3aed; }
+
+.thumb-notes { background: #fafaf8; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; gap: 16px; padding: 20px; }
+.notes-before { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+.notes-wavy { height: 3px; border-radius: 2px; background: repeating-linear-gradient(90deg, #bbb 0, #bbb 4px, transparent 4px, transparent 8px); }
+.notes-arrow { font-size: 20px; color: var(--color-text-tertiary); }
+.notes-after { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+.notes-line { height: 3px; background: #d0d0d0; border-radius: 2px; }
+
+.thumb-brainstorm { background: #dbeafe; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+.cloud-shape { width: 80px; height: 64px; position: relative; }
+.cloud-body { background: white; width: 80px; height: 44px; border-radius: 22px; position: absolute; bottom: 0; }
+.cloud-puff1 { background: white; width: 44px; height: 44px; border-radius: 50%; position: absolute; top: 8px; left: 8px; }
+.cloud-puff2 { background: white; width: 36px; height: 36px; border-radius: 50%; position: absolute; top: 12px; right: 10px; }
+.cloud-q { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -45%); font-size: 22px; color: #3b82f6; font-weight: 600; z-index: 1; }
+
+.thumb-flash { background: #fff7ed; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; gap: 12px; }
+.flash-card { background: white; border-radius: 8px; padding: 14px 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.flash-zh { font-size: 22px; color: #dc2626; font-weight: 500; }
+.flash-es { font-size: 16px; color: #9ca3af; }
+.flash-back { background: #fff7ed; border: 0.5px solid #fde68a; border-radius: 8px; padding: 10px 14px; transform: rotate(-5deg); }
+</style>
+
+<div class="app">
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      Claude
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="5" height="5" rx="1" fill="currentColor"/><rect x="9" y="2" width="5" height="5" rx="1" fill="currentColor"/><rect x="2" y="9" width="5" height="5" rx="1" fill="currentColor"/><rect x="9" y="9" width="5" height="5" rx="1" fill="currentColor"/></svg>
+    </div>
+
+    <div class="sidebar-btn">
+      <svg class="sidebar-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2z"/></svg>
+      새 채팅
+    </div>
+    <div class="sidebar-btn">
+      <svg class="sidebar-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4"/><path d="M11 11l3 3"/></svg>
+      검색
+    </div>
+    <div class="sidebar-btn">
+      <svg class="sidebar-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="12" height="10" rx="1.5"/><path d="M5 3V2M11 3V2M2 7h12"/></svg>
+      사용자 지정
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <div class="sidebar-btn">
+      <svg class="sidebar-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v8"/><path d="M1 12h14M6 7h4M6 9.5h2"/></svg>
+      채팅
+    </div>
+    <div class="sidebar-btn">
+      <svg class="sidebar-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="5.5" height="5.5" rx="1"/><rect x="8.5" y="2" width="5.5" height="5.5" rx="1"/><rect x="2" y="8.5" width="5.5" height="5.5" rx="1"/><rect x="8.5" y="8.5" width="5.5" height="5.5" rx="1"/></svg>
+      프로젝트
+    </div>
+    <div class="sidebar-btn active">
+      <svg class="sidebar-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="2.5"/><circle cx="11" cy="5" r="2.5"/><circle cx="5" cy="11" r="2.5"/><circle cx="11" cy="11" r="2.5"/></svg>
+      아티팩트
+    </div>
+    <div class="sidebar-btn">
+      <svg class="sidebar-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 3h2l2 10h4l2-10h2"/></svg>
+      코드
+    </div>
+
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section-label">최근 항목</div>
+    <div class="sidebar-btn" style="font-size: 13px;">이미지로 앱 만들기</div>
+  </div>
+
+  <div class="main">
+    <div class="main-header">
+      <h1 class="main-title">아티팩트</h1>
+      <button class="btn-new" onclick="alert('새 아티팩트를 만들어 보세요!')">새 아티팩트</button>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab(this, 'inspire')">영감</div>
+      <div class="tab" onclick="switchTab(this, 'mine')">내 아티팩트</div>
+    </div>
+
+    <div id="inspire-view">
+      <div class="filters">
+        <div class="filter-chip active" onclick="filterChip(this)">전체</div>
+        <div class="filter-chip" onclick="filterChip(this)">새로운 것 배우기</div>
+        <div class="filter-chip" onclick="filterChip(this)">라이프 핵</div>
+        <div class="filter-chip" onclick="filterChip(this)">게임하기</div>
+        <div class="filter-chip" onclick="filterChip(this)">창의적으로 생각하기</div>
+        <div class="filter-chip" onclick="filterChip(this)">휴식하기</div>
+      </div>
+
+      <div class="grid">
+        <div class="card" onclick="sendPrompt('글쓰기 에디터 아티팩트를 만들어줘')">
+          <div class="card-thumb">
+            <div class="thumb-writing">
+              <div class="thumb-writing-inner">
+                <div class="tw-small">me and my colleague</div>
+                <div class="tw-highlight">my colleague and I</div>
+                <div class="tw-note">Use 'I' instead of 'me' as the subject, put the other person first, and correct the spelling of 'colleague'</div>
+                <div class="tw-lines">
+                  <div class="tw-line" style="width:100%"></div>
+                  <div class="tw-line" style="width:80%"></div>
+                  <div class="tw-line" style="width:90%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card-label">글쓰기 에디터</div>
+        </div>
+
+        <div class="card" onclick="sendPrompt('PRD를 프로토타입으로 변환하는 아티팩트를 만들어줘')">
+          <div class="card-thumb">
+            <div class="thumb-prd">
+              <div style="position: absolute; top: 12px; left: 12px; display: flex; flex-direction: column; gap: 6px; width: 60%;">
+                <div style="background: white; border-radius: 4px; padding: 6px 8px; height: 36px;"></div>
+                <div style="background: rgba(255,255,255,0.7); border-radius: 4px; height: 20px;"></div>
+              </div>
+              <div class="prd-box">
+                <div class="prd-badge">PRD</div>
+                <div class="prd-lines">
+                  <div class="prd-line" style="width:100%; background:#bfdbfe;"></div>
+                  <div class="prd-line" style="width:70%; background:#dbeafe;"></div>
+                  <div class="prd-line" style="width:85%; background:#dbeafe;"></div>
+                </div>
+                <div class="prd-btn"></div>
+              </div>
+            </div>
+          </div>
+          <div class="card-label">PRD를 프로토타입으로</div>
+        </div>
+
+        <div class="card" onclick="sendPrompt('Slack 프로젝트 인사이트 대시보드 아티팩트를 만들어줘')">
+          <div class="card-thumb">
+            <div class="thumb-slack">
+              <div class="slack-search">
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="#888" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4"/><path d="M11 11l3 3"/></svg>
+                onboarding
+              </div>
+              <div class="slack-channel"><span>#</span> ux-feedback</div>
+              <div class="slack-channel"><span>#</span> proj-onboarding</div>
+            </div>
+          </div>
+          <div class="card-label">Slack 프로젝트 인사이트</div>
+        </div>
+
+        <div class="card" onclick="sendPrompt('원시 노트를 구조화된 문서로 변환하는 아티팩트를 만들어줘')">
+          <div class="card-thumb">
+            <div class="thumb-notes">
+              <div class="notes-before">
+                <div class="notes-wavy"></div>
+                <div class="notes-wavy" style="width:80%"></div>
+                <div class="notes-wavy" style="width:90%"></div>
+                <div class="notes-wavy" style="width:70%"></div>
+              </div>
+              <div class="notes-arrow">→</div>
+              <div class="notes-after">
+                <div class="notes-line" style="width:100%; background:#a0a0a0;"></div>
+                <div class="notes-line" style="width:85%; background:#c0c0c0;"></div>
+                <div class="notes-line" style="width:60%; background:#c0c0c0;"></div>
+                <div class="notes-line" style="width:90%; background:#c0c0c0;"></div>
+              </div>
+            </div>
+          </div>
+          <div class="card-label">원시 노트 변환기</div>
+        </div>
+
+        <div class="card" onclick="sendPrompt('브레인스토밍 아이디어 생성기 아티팩트를 만들어줘')">
+          <div class="card-thumb">
+            <div class="thumb-brainstorm">
+              <div class="cloud-shape">
+                <div class="cloud-puff1"></div>
+                <div class="cloud-puff2"></div>
+                <div class="cloud-body"></div>
+                <div class="cloud-q">?</div>
+              </div>
+            </div>
+          </div>
+          <div class="card-label">브레인스토밍 아이디어 생성기</div>
+        </div>
+
+        <div class="card" onclick="sendPrompt('언어 학습 플래시카드 아티팩트를 만들어줘')">
+          <div class="card-thumb">
+            <div class="thumb-flash">
+              <div class="flash-back">
+                <div class="flash-es">hola</div>
+              </div>
+              <div class="flash-card">
+                <div class="flash-zh">你好</div>
+              </div>
+            </div>
+          </div>
+          <div class="card-label">플래시카드</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="mine-view" style="display:none;">
+      <div style="text-align: center; padding: 60px 0; color: var(--color-text-secondary); font-size: 14px;">
+        아직 만든 아티팩트가 없습니다.<br>
+        <span style="color: var(--color-text-tertiary); font-size: 13px;">새 아티팩트를 만들어 시작해보세요.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function switchTab(el, view) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('inspire-view').style.display = view === 'inspire' ? 'block' : 'none';
+  document.getElementById('mine-view').style.display = view === 'mine' ? 'block' : 'none';
+}
+function filterChip(el) {
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+}
+</script>
